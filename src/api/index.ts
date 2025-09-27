@@ -170,3 +170,52 @@ export const postNewNote = async (body: {
     throw error;
   }
 };
+
+export const editNote = async (
+  noteId: string,
+  formData: {
+    subject_id: string;
+    type: string;
+    content: string;
+    image_url: string;
+  }
+) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN EDITNOTE ES", token);
+
+    return await axios.put(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/notes/${noteId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR editNote", error);
+    throw error;
+  }
+};
+
+export const deleteNote = async (noteId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN DELETENOTE ES", token);
+
+    return await axios.delete(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/notes/${noteId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR deleteNote", error);
+    throw error;
+  }
+};

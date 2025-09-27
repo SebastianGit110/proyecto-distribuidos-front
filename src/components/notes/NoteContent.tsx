@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { GeneralContext } from "../../context/GeneralContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteIcon, EditIcon } from "../../utils/Icons";
+import { deleteNote, editNote } from "../../api";
 
 function NoteContent() {
   const navigate = useNavigate();
@@ -9,6 +10,21 @@ function NoteContent() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    subject_id: currentNote.subject_id,
+    type: currentNote.type,
+    content: currentNote.content,
+    image_url: currentNote.image_url,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleEdit = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>,
@@ -26,6 +42,29 @@ function NoteContent() {
     e.stopPropagation();
     setIsDeleteModalOpen(true);
     console.log("Eliminando", id);
+  };
+
+  const handleDeleteNoteById = async () => {
+    try {
+      await deleteNote(currentNote.id);
+      console.log("Eliminando...");
+    } catch (error) {
+      console.log("ERROR AL ELIMINAR NOTE", error);
+    } finally {
+      setIsDeleteModalOpen(false);
+      navigate(`/notes/${currentNote.subject_id}`);
+    }
+  };
+
+  const handleEditNoteById = async () => {
+    try {
+      await editNote(currentNote.id, formData);
+    } catch (error) {
+      console.log("ERROR AL EDITAR NOTA", error);
+    } finally {
+      setIsEditModalOpen(false);
+      navigate(`/notes/${currentNote.subject_id}`)
+    }
   };
 
   return (
@@ -91,7 +130,35 @@ function NoteContent() {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-[400px]">
             <h2 className="text-xl font-semibold mb-4">Editar Nota</h2>
-            <input type="text" className="w-full p-2 border rounded mb-4" />
+
+            <input
+              type="text"
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              placeholder="Type"
+              className="w-full p-2 border rounded mb-4"
+            />
+
+            <input
+              type="text"
+              name="content"
+              value={formData.content}
+              onChange={handleChange}
+              placeholder="Content"
+              className="w-full p-2 border rounded mb-4"
+            />
+
+            <input
+              type="text"
+              name="image_url"
+              value={formData.image_url}
+              onChange={handleChange}
+              placeholder="Image URL"
+              autoComplete="off"
+              className="w-full p-2 border rounded mb-4"
+            />
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsEditModalOpen(false)}
@@ -100,10 +167,7 @@ function NoteContent() {
                 Cancelar
               </button>
               <button
-                onClick={() => {
-                  console.log("Guardando cambios...");
-                  setIsEditModalOpen(false);
-                }}
+                onClick={handleEditNoteById}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Editar
@@ -128,10 +192,7 @@ function NoteContent() {
                 Cancelar
               </button>
               <button
-                onClick={() => {
-                  console.log("Eliminando...");
-                  setIsDeleteModalOpen(false);
-                }}
+                onClick={handleDeleteNoteById}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Eliminar
