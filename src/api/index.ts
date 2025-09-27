@@ -219,3 +219,21 @@ export const deleteNote = async (noteId: string) => {
     throw error;
   }
 };
+
+export const getNoteSummary = async (noteId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    return await axios.get(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/notes/${noteId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR getNoteSummary", error);
+    throw error;
+  }
+};

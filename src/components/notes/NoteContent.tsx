@@ -1,15 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GeneralContext } from "../../context/GeneralContext";
 import { useNavigate } from "react-router-dom";
 import { DeleteIcon, EditIcon } from "../../utils/Icons";
-import { deleteNote, editNote } from "../../api";
+import { deleteNote, editNote, getNoteSummary } from "../../api";
 
 function NoteContent() {
   const navigate = useNavigate();
   const { currentNote } = useContext(GeneralContext);
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
+  const [isLoadingIA, setIsLoadingIA] = useState<boolean>(false);
+  const [openaiResponse, setOpenaiResponse] = useState({
+    resumen: "",
+    preguntas: "",
+  });
 
   const [formData, setFormData] = useState({
     subject_id: currentNote.subject_id,
@@ -63,13 +69,37 @@ function NoteContent() {
       console.log("ERROR AL EDITAR NOTA", error);
     } finally {
       setIsEditModalOpen(false);
-      navigate(`/notes/${currentNote.subject_id}`)
+      navigate(`/notes/${currentNote.subject_id}`);
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoadingIA(true);
+      try {
+        const response = await getNoteSummary(currentNote.id);
+
+        setOpenaiResponse({
+          preguntas: response.data.preguntas,
+          resumen: response.data.resumen,
+        });
+
+        console.log("LA RESPUESTA DE OPENAI", response);
+      } catch (error) {
+        console.log("ERROR AL CONSULTAR RESUMEN DE IA", error);
+      } finally {
+        setIsLoadingIA(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(openaiResponse);
+
   return (
     <>
-      <div className="grid grid-cols-5 grid-rows-11 gap-4 my-5">
+      <div className="grid grid-cols-5 grid-rows-[auto_400px_250px] gap-4 my-5">
         <div className="col-span-3 col-start-2 row-start-1 flex justify-between items-center">
           <button
             className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium transition"
@@ -93,7 +123,7 @@ function NoteContent() {
         </div>
 
         {/* Contenedor principal de la tarjeta */}
-        <div className="col-span-3 row-span-6 col-start-2 row-start-2 bg-white rounded shadow flex flex-col">
+        <div className="col-span-3 col-start-2 row-start-2 bg-white rounded shadow flex flex-col">
           <img
             src={currentNote.image_url}
             alt="placeholder"
@@ -106,22 +136,25 @@ function NoteContent() {
         </div>
 
         {/* Resumen y lista */}
-        <div className="col-span-3 row-span-4 col-start-2 row-start-8 bg-white rounded shadow p-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-1">Resumen</h2>
-          <p className="text-gray-600 text-sm mb-3">
-            Este es un texto ficticio que sirve como resumen breve de los datos
-            listados más abajo. Proporciona contexto adicional para el lector.
-          </p>
-          <h3 className="font-semibold text-lg text-gray-700 mb-2">
-            Lista de datos
-          </h3>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>Dato 1: información ficticia</li>
-            <li>Dato 2: valor aleatorio</li>
-            <li>Dato 3: otro contenido</li>
-            <li>Dato 4: ejemplo adicional</li>
-            <li>Dato 5: prueba final</li>
-          </ul>
+        <div className="col-span-3 col-start-2 row-start-3 bg-white rounded shadow p-4 overflow-auto">
+          {isLoadingIA ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-lg font-semibold text-gray-700 mb-1">
+                Resumen
+              </h2>
+              <p className="text-gray-600 text-sm mb-3">
+                {openaiResponse.resumen}
+              </p>
+              <h3 className="font-semibold text-lg text-gray-700 mb-2">
+                Preguntas
+              </h3>
+                {openaiResponse.preguntas}
+            </>
+          )}
         </div>
       </div>
 
