@@ -1,44 +1,4 @@
-import { SubjectsProps, NotesProps } from "../types";
-import { getRandomColor } from "../utils/randomColor";
-
-export const subjects: SubjectsProps[] = [
-  {
-    subject_id: "1",
-    name: "Matemáticas",
-    notesLength: 5,
-    color: getRandomColor(),
-  },
-  {
-    subject_id: "2",
-    name: "Historia",
-    notesLength: 3,
-    color: getRandomColor(),
-  },
-  {
-    subject_id: "3",
-    name: "Lengua",
-    notesLength: 4,
-    color: getRandomColor(),
-  },
-  {
-    subject_id: "4",
-    name: "Inglés",
-    notesLength: 2,
-    color: getRandomColor(),
-  },
-  {
-    subject_id: "5",
-    name: "Física",
-    notesLength: 6,
-    color: getRandomColor(),
-  },
-  {
-    subject_id: "6",
-    name: "Química",
-    notesLength: 3,
-    color: getRandomColor(),
-  },
-];
+import { NotesProps } from "../types";
 
 export const notes: NotesProps[] = [
   {

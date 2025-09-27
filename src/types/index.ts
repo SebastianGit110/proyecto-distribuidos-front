@@ -1,7 +1,7 @@
 export type SubjectsProps = {
-  subject_id: string;
+  id: string;
   name: string;
-  notesLength: number;
+  notas_count: number;
   color?: string;
 };
 
@@ -11,4 +11,16 @@ export type NotesProps = {
   type: string;
   content: string;
   image_url: string;
+};
+
+export type SignupI = {
+  username: string;
+  email: string;
+  password_hash: string;
+  created_at: Date;
+};
+
+export type LoginI = {
+  username: string;
+  password: string;
 };

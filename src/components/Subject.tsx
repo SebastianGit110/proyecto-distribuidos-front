@@ -4,9 +4,9 @@ import { CalendarIcon, DeleteIcon, EditIcon } from "../utils/Icons";
 import { SubjectsProps } from "../types";
 
 export const Subject = ({
-  subject_id,
+  id,
   name,
-  notesLength,
+  notas_count,
   color,
 }: SubjectsProps) => {
   const navigate = useNavigate();
@@ -15,44 +15,44 @@ export const Subject = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleClick = () => {
-    navigate(`/notes/${subject_id}`);
+    navigate(`/notes/${id}`);
   };
 
   const handleEdit = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    subject_id: string
+    id: string
   ) => {
     e.stopPropagation();
     setIsEditModalOpen(true);
-    console.log("EDITANDO", subject_id);
+    console.log("EDITANDO", id);
   };
 
   const handleDelete = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    subject_id: string
+    id: string
   ) => {
     e.stopPropagation();
     setIsDeleteModalOpen(true);
-    console.log("Eliminando", subject_id);
+    console.log("Eliminando", id);
   };
 
   return (
     <>
       <div
-        className="relative w-1/4 p-6 rounded-xl flex items-center justify-between 
+        className="relative w-[27%] h-28 p-6 rounded-xl flex items-center justify-between 
         border border-gray-300 shadow-sm bg-[#FFFBF4] 
         transition-transform duration-200 hover:shadow-md hover:scale-[1.02] hover:border-gray-400 cursor-pointer"
         onClick={handleClick}
       >
         <div className="absolute top-2 right-2 flex gap-2">
-          <EditIcon handleEdit={(e) => handleEdit(e, subject_id)} />
-          <DeleteIcon handleDelete={(e) => handleDelete(e, subject_id)} />
+          <EditIcon handleEdit={(e) => handleEdit(e, id)} />
+          <DeleteIcon handleDelete={(e) => handleDelete(e, id)} />
         </div>
 
         <CalendarIcon color={color!} />
         <div className="flex-1 text-center">
           <p className="font-semibold text-lg">{name}</p>
-          <p className="text-sm text-gray-700">Notas: {notesLength}</p>
+          <p className="text-sm text-gray-700">Notas: {notas_count}</p>
         </div>
       </div>
 
