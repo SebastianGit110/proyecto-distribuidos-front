@@ -52,7 +52,7 @@ function Notes() {
           className="flex items-center gap-2 rounded-md bg-[#d86d38] p-2 text-white hover:bg-[#b95528] transition"
         >
           <AddSubject />
-          Nueva Materia
+          Nueva Nota
         </button>
 
         {open && (
