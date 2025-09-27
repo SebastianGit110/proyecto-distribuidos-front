@@ -6,11 +6,13 @@ export type SubjectsProps = {
 };
 
 export type NotesProps = {
-  note_id: string;
+  id: string;
   subject_id: string;
   type: string;
   content: string;
   image_url: string;
+  user_id: string;
+  created_at: string;
 };
 
 export type SignupI = {

@@ -2,17 +2,29 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CalendarIcon, DeleteIcon, EditIcon } from "../utils/Icons";
 import { SubjectsProps } from "../types";
+import { deleteSubject, editSubject } from "../api";
+
+interface SubjectI {
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+type SubjectArgs = SubjectI & SubjectsProps;
 
 export const Subject = ({
   id,
   name,
   notas_count,
   color,
-}: SubjectsProps) => {
+  setRefresh,
+}: SubjectArgs) => {
   const navigate = useNavigate();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
+
+  const [editName, setEditName] = useState(name);
 
   const handleClick = () => {
     navigate(`/notes/${id}`);
@@ -23,7 +35,9 @@ export const Subject = ({
     id: string
   ) => {
     e.stopPropagation();
+
     setIsEditModalOpen(true);
+    setCurrentSubjectId(id);
     console.log("EDITANDO", id);
   };
 
@@ -32,8 +46,36 @@ export const Subject = ({
     id: string
   ) => {
     e.stopPropagation();
+
     setIsDeleteModalOpen(true);
+    setCurrentSubjectId(id);
     console.log("Eliminando", id);
+  };
+
+  const handleDeleteSubject = async () => {
+    try {
+      await deleteSubject(currentSubjectId);
+      console.log("Eliminando...");
+
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.log("ERROR EN ELIMINAR ASIGNATURA", error);
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const handleEditSubject = async () => {
+    try {
+      await editSubject(currentSubjectId, editName);
+      console.log("Editando...");
+
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.log("ERROR EN EDITAR ASIGNATURA", error);
+    } finally {
+      setIsEditModalOpen(false);
+    }
   };
 
   return (
@@ -63,7 +105,8 @@ export const Subject = ({
             <h2 className="text-xl font-semibold mb-4">Editar asignatura</h2>
             <input
               type="text"
-              defaultValue={name}
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
               className="w-full p-2 border rounded mb-4"
             />
             <div className="flex justify-end gap-2">
@@ -74,10 +117,7 @@ export const Subject = ({
                 Cancelar
               </button>
               <button
-                onClick={() => {
-                  console.log("Guardando cambios...");
-                  setIsEditModalOpen(false);
-                }}
+                onClick={handleEditSubject}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Editar
@@ -103,10 +143,7 @@ export const Subject = ({
                 Cancelar
               </button>
               <button
-                onClick={() => {
-                  console.log("Eliminando...");
-                  setIsDeleteModalOpen(false);
-                }}
+                onClick={handleDeleteSubject}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Eliminar

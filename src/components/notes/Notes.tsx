@@ -1,14 +1,36 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { notes } from "../../data/exampleData";
 import Note from "./Note";
 import { AddSubject } from "../../utils/Icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { NotesProps } from "../../types";
+import { getNotes } from "../../api";
 
 function Notes() {
   const navigate = useNavigate();
   const { subject_id } = useParams();
 
   const [open, setOpen] = useState(false);
+  const [notes, setNotes] = useState<NotesProps[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!subject_id) return;
+
+        const response = await getNotes(subject_id);
+
+        setNotes(response.data);
+
+        console.log(
+          "LA RESPUESTA DE NOTAS PARA MATERIA ",
+          subject_id,
+          response
+        );
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="px-20 py-5">
@@ -16,7 +38,7 @@ function Notes() {
         <button
           className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium transition"
           onClick={() => {
-            navigate("/");
+            navigate("/home");
           }}
         >
           Volver
@@ -35,7 +57,7 @@ function Notes() {
 
       <div className="grid grid-cols-3 gap-4">
         {notes.map((note) => (
-          <Note key={note.note_id} note={note} />
+          <Note key={note.id} note={note} />
         ))}
       </div>
     </div>

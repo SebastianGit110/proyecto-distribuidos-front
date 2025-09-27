@@ -12,20 +12,20 @@ function NoteContent() {
 
   const handleEdit = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    note_id: string
+    id: string
   ) => {
     e.stopPropagation();
     setIsEditModalOpen(true);
-    console.log("EDITANDO", note_id);
+    console.log("EDITANDO", id);
   };
 
   const handleDelete = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    note_id: string
+    id: string
   ) => {
     e.stopPropagation();
     setIsDeleteModalOpen(true);
-    console.log("Eliminando", note_id);
+    console.log("Eliminando", id);
   };
 
   return (
@@ -42,12 +42,12 @@ function NoteContent() {
           <div className="flex gap-2">
             <EditIcon
               handleEdit={(e) => {
-                handleEdit(e, currentNote.note_id);
+                handleEdit(e, currentNote.id);
               }}
             />
             <DeleteIcon
               handleDelete={(e) => {
-                handleDelete(e, currentNote.note_id);
+                handleDelete(e, currentNote.id);
               }}
             />
           </div>

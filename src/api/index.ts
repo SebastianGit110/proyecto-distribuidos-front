@@ -1,44 +1,146 @@
 import axios from "axios";
 import { LoginI, SignupI } from "../types";
 
-export const register = async (body: SignupI) =>
-  await axios.post(
-    `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/auth/signup`,
-    body,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+// Auth
 
-export const login = async (body: LoginI) => {
-  const params = new URLSearchParams();
-  params.append("username", body.username);
-  params.append("password", body.password);
-
-  return await axios.post(
-    `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/auth/login`,
-    params,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
+export const register = async (body: SignupI) => {
+  try {
+    return await axios.post(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/auth/signup`,
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR register", error);
+    throw error;
+  }
 };
 
+export const login = async (body: LoginI) => {
+  try {
+    const params = new URLSearchParams();
+    params.append("username", body.username);
+    params.append("password", body.password);
+
+    return await axios.post(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/auth/login`,
+      params,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR login", error);
+    throw error;
+  }
+};
+
+// Subjects
+
 export const getSubjects = async () => {
-  const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-  console.log("EL TOKEN A ENVIAR EN GETSUBJECTS ES", token);
+    console.log("EL TOKEN A ENVIAR EN GETSUBJECTS ES", token);
 
-  return await axios.get(
-    "https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+    return await axios.get(
+      "https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR getSubjects", error);
+    throw error;
+  }
+};
+
+export const postNewSubject = async (name: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN GETSUBJECTS ES", token);
+
+    return await axios.post(
+      "https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/",
+      { name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR getSubjects", error);
+    throw error;
+  }
+};
+
+export const editSubject = async (subjectId: string, name: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN EDITSUBJECTS ES", token);
+
+    return await axios.put(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/${subjectId}`,
+      { name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR deleteSubject", error);
+    throw error;
+  }
+};
+
+export const deleteSubject = async (subjectId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN DELETESUBJECTS ES", token);
+
+    return await axios.delete(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/${subjectId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR deleteSubject", error);
+    throw error;
+  }
+};
+
+// Notes
+
+export const getNotes = async (subjectId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    return await axios.get(
+      `https://proyectodistribuidosfastapimongodbia-production.up.railway.app/notes/by-subject/${subjectId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR getNotes", error);
+    throw error;
+  }
 };
