@@ -67,7 +67,7 @@ export const postNewSubject = async (name: string) => {
   try {
     const token = localStorage.getItem("token");
 
-    console.log("EL TOKEN A ENVIAR EN GETSUBJECTS ES", token);
+    console.log("EL TOKEN A ENVIAR EN POSTSUBJECTS ES", token);
 
     return await axios.post(
       "https://proyectodistribuidosfastapimongodbia-production.up.railway.app/subjects/",
@@ -79,7 +79,7 @@ export const postNewSubject = async (name: string) => {
       }
     );
   } catch (error) {
-    console.log("ERROR getSubjects", error);
+    console.log("ERROR postNewSubject", error);
     throw error;
   }
 };
@@ -100,7 +100,7 @@ export const editSubject = async (subjectId: string, name: string) => {
       }
     );
   } catch (error) {
-    console.log("ERROR deleteSubject", error);
+    console.log("ERROR editSubject", error);
     throw error;
   }
 };
@@ -141,6 +141,32 @@ export const getNotes = async (subjectId: string) => {
     );
   } catch (error) {
     console.log("ERROR getNotes", error);
+    throw error;
+  }
+};
+
+export const postNewNote = async (body: {
+  subject_id: string;
+  type: string;
+  content: string;
+  image_url: string;
+}) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    console.log("EL TOKEN A ENVIAR EN POSTNEWNOTE ES", token);
+
+    return await axios.post(
+      "https://proyectodistribuidosfastapimongodbia-production.up.railway.app/notes/",
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log("ERROR postNewNote", error);
     throw error;
   }
 };

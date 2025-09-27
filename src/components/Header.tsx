@@ -38,10 +38,11 @@ const Modal = ({
     try {
       const response = await postNewSubject(name);
       console.log("AL CREAR ASIGNATURA", response);
-      onClose();
       setRefresh((prev) => !prev);
     } catch (error) {
       console.log("ERROR AL CREAR ASIGNATURA", error);
+    } finally {
+      onClose();
     }
   };
 

@@ -3,11 +3,13 @@ import { GeneralContext } from "./GeneralContext";
 
 export const GeneralProvider = ({ children }: { children: ReactNode }) => {
   const [currentNote, setCurrentNote] = useState({
-    note_id: "",
+    id: "",
     subject_id: "",
     type: "",
     content: "",
     image_url: "",
+    user_id: "",
+    created_at: "",
   });
 
   return (

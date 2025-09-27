@@ -8,11 +8,13 @@ type GeneralContextType = {
 
 export const GeneralContext = createContext<GeneralContextType>({
   currentNote: {
-    note_id: "",
+    id: "",
     subject_id: "",
     type: "",
     content: "",
     image_url: "",
+    user_id: "",
+    created_at: "",
   },
   setCurrentNote: () => {},
 });
